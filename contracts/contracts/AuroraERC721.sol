@@ -6,32 +6,35 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract AuroraERC721 is ERC721  {
 
-uint256 private _tokenIds;
+	uint256 private _tokenIds;
 	uint256 private _bidIds;
 	uint256 private _eventIds;
-	uint256 private _EventTokenIds;
-	uint256 private _TokenBidIds;
-	string[2] data1;
-	uint256 public _EventTokenSearchIds;
-	mapping(uint256 => string[2]) private AllEventTokens;
-	mapping(uint256 => string[2]) private AllTokensBids;
-	mapping(uint256 => string[2]) public _SearchedStore;
-	mapping(uint256 => string) private _bidURIs;
 	mapping(uint256 => string) private _tokenURIs;
 	mapping(uint256 => string) private _eventURIs;
-	mapping(string => string) private _eventTokens;
+	mapping(uint256 => string[2]) private AllTokensBids;
+	mapping(uint256 => string[2]) private AllEventTokens;
 
 constructor(string memory name, string memory symbol)
 		ERC721(name, symbol)
 	{}
 
    
-	function claimToken(address _claimer) public returns (uint256) {
+	function claimToken(address _claimer,uint256 eventId,uint256 tokentId,
+		string memory _tokenURI) public returns (uint256) {
 		_mint(_claimer, _tokenIds);
-		
+		_setTokenEvent(tokentId,eventId, _tokenURI);
 		_tokenIds++;
-		_EventTokenIds++;
 		return _tokenIds;
+	}
+	function _setTokenEvent(
+		uint256 TokenId,
+		uint256 EventId,
+		string memory _tokenURI
+	) public virtual {
+		AllEventTokens[TokenId] = [
+			Strings.toString(EventId),
+			string(_tokenURI)
+		];
 	}
 
 	function createEvent( string memory _eventURI) public returns (uint256) {
@@ -47,8 +50,14 @@ constructor(string memory name, string memory symbol)
 		return _eventURIs[eventId];
 	}
 
-
-
+	function createBid(uint256 tokenId, string memory _bidURI) public returns (uint256) {
+		AllTokensBids[_bidIds] = [
+			Strings.toString(tokenId),
+			string(_bidURI)
+		];
+		_bidIds++;
+		return _bidIds;
+	}	
 }
 
 

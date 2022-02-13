@@ -3,11 +3,15 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import UseFormInput from '../UseFormInput';
+import { createTokenAPI} from '@/pages/Events/token';
+
+import { toast } from 'react-toastify';
+
+import useContract from '../../../../services/useContract';
 
 export default function DonateNFTModal({
 	show,
 	onHide,
-	contract,
 	senderAddress,
 	type,
 	EventID,
@@ -16,8 +20,9 @@ export default function DonateNFTModal({
 	selectedWallet
 }) {
 
+	const { contract, signerAddress } = useContract('ERC721');
 
-	console.log(contract);
+
 	const [name, nameInput] = UseFormInput({
 		type: 'text',
 		placeholder: 'Enter name',
@@ -44,32 +49,57 @@ export default function DonateNFTModal({
 		placeholder: 'Enter Cryptopunk address',
 	});
 
-	async function createNFT() {
+async function createNFT() {
+  	await toast.promise(creatingNFT, {
+            pending: `${type} is creating...`,
+            error: "Please try again later",
+            success: `${type} has created!`
+        },{
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            className: "Toastify__toast-theme--dark"
+            })
+	window.location.href = `/donation/auction?${EventID}`;
+	window.document.getElementsByClassName("btn-close")[0].click();
+}
+
+	async function creatingNFT() {
 		let Logourl = url;
 		var tokenAddress = NFTaddress;
 		if ("Cryptopunk" == type) {
 			tokenAddress = Cryptopunkaddress;
 		}
+
 		try {
-			const fetch = require('node-fetch');
 
-			let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/createtoken';
-
-			let options = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json, text/plain, */*'
-				},
-				body: `{"eventid":${EventID},"name":"${name}","description":"${description}","Bidprice":${price},"price":${price},"type":"${type}","image":"${Logourl}"}`
+			const tokenID = await createTokenAPI(EventID,name, description, price, type, Logourl);
+			const createdObject = {
+				eventid: EventID,        
+				name:  name,
+				description: description,
+				Bidprice:price,
+				price: price,
+				type:  type,
+				image: Logourl
 			};
+			const result = await contract.claimToken(
+                signerAddress,
+                EventID,
+				tokenID,
+				createdObject
+            );
 
-			await fetch(url, options);
+            console.log(result);
+
 		} catch (error) {
-			console.error(error);
+			return(error);
 		}
-		window.location.href = `/donation/auction?${EventID}`;
-		window.document.getElementsByClassName("btn-close")[0].click();
+		
 
 	}
 

@@ -37,6 +37,10 @@ import PsyoptionMint from '@/psyoption/pages/mint/mint'
 import './App.scss'
 import * as serviceWorker from "./serviceWorker";
 import '@/near-contracts/contract';
+//Toast
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function App(): JSX.Element {
     return (
@@ -49,7 +53,7 @@ export function App(): JSX.Element {
         >
             <Router>
                 <div className="wrapper">
-
+                    <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false}  pauseOnFocusLoss draggable pauseOnHover/>
                     <Header key="header" />
                     <main className="main">
                         <Switch>

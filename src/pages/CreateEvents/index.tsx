@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
 import Row from 'react-bootstrap/Row';
+import { toast } from 'react-toastify';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import { Observer } from 'mobx-react-lite';
 import UseFormInput from '@/components/components/UseFormInput';
-import proxy from 'http-proxy-middleware';
-import { useIntl } from 'react-intl';
 import { createEventAPI, createEventCategoryAPI } from '@/pages/Events/event';
 import { CreatePlugin } from '@/pages/Events/event';
 import { Icon } from '@/components/common/Icon'
@@ -30,34 +27,53 @@ window.nearConfig = getConfig("development");
 export default function CreateEvents() {
     const { contract } = useContract('ERC721');
 
+    async function CreateEvent(){
+       await toast.promise(CreatingEvent, {
+            pending: "Event is creating...",
+            error: "Please try again later",
+            success: "Event has created!"
+        },{
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            className: "Toastify__toast-theme--dark"
+            })
 
-    const CreateEvent = async () => {
-        // while(true){
-        //     try {
-        //         // const eventcategories = JSON.stringify(eventCategories);
-        //         // const eventcategories = JSON.stringify(eventCategories);
-        //         // console.log(eventcategories);
-        //         const id = await createEventAPI(EventTitle, EventDescription, EventDate, EventWalletAddressGoal, EventGoal, EventLogo,EventWalletType);
+            document.querySelectorAll('[href="/donation"]')[0].click()    
+    }
 
-        //         for(var i=0; i<eventCategories.length;i++){
-        //             await createEventCategoryAPI(id, eventCategories[i].title,eventCategories[i].amount,eventCategories[i].price,eventCategories[i].image);
-        //         }
-        //         // await createEventCategoryAPI(id, eventCategories[0].title,eventCategories[0].amount,eventCategories[0].price,eventCategories[0].image);
-        //         console.log("here1");
-        //         console.log(eventCategories);
-        //         if (document.getElementById("plugin").checked) {
-        //             await CreatePlugin(`https://${window.location.hostname}/donation/auction?${id}`);
-        //         }
+    const CreatingEvent = async () => {
+   
+        while(true){
+            try {
+                // const eventcategories = JSON.stringify(eventCategories);
+                // const eventcategories = JSON.stringify(eventCategories);
+                // console.log(eventcategories);
+                const id = await createEventAPI(EventTitle, "", EventDate, EventWalletAddress, EventGoal, EventLogo,EventWalletType);
 
-        //         document.querySelectorAll('[href="/donation"]')[0].click()
-        //         break;
-        //     } catch (error) {
-        //         console.error(error);
-        //         setTimeout(function() {}, 2000);
-        //         continue;
-        //     }
-        // }
-        // Based on whether you've authorized, checking which flow we should go.
+                for(var i=0; i<eventCategories.length;i++){
+                    await createEventCategoryAPI(id, eventCategories[i].title,eventCategories[i].amount,eventCategories[i].price,eventCategories[i].image);
+                }
+                // await createEventCategoryAPI(id, eventCategories[0].title,eventCategories[0].amount,eventCategories[0].price,eventCategories[0].image);
+                console.log("here1");
+                console.log(eventCategories);
+                if (document.getElementById("plugin").checked) {
+                    await CreatePlugin(`https://${window.location.hostname}/donation/auction?${id}`);
+                }
+
+               
+                break;
+            } catch (error) {
+                console.error(error);
+                setTimeout(function() {}, 2000);
+                continue;
+            }
+        }
+ //       Based on whether you've authorized, checking which flow we should go.
         console.log(contract);
         const createdObject = {
             Title: EventTitle,        

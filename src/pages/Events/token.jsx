@@ -30,6 +30,33 @@ export async function tokengetbyeventid(eventid) {
 
 
 
+export async function createTokenAPI(EventID, name, description, price, type, Logourl) {
+    const fetch = require('node-fetch');
+    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/createtoken';
+    let options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/plain, */*'
+        },
+        body: `{"eventid":${EventID},"name":"${name}","description":"${description}","Bidprice":${price},"price":${price},"type":"${type}","image":"${Logourl}"}`
+    };
+   
+    var resultfetch;
+    var booltrue = true;
+    while (booltrue) {
+        try {
+            await fetch(url, options).then(res => res.json())
+                .then(json => resultfetch = json)
+        } catch (er) {
+            continue;
+        }
+        break;
+    }
+    return resultfetch.id;
+}
+
+
 export async function createBid(Tokenid, UserName, Bidprice) {
     const fetch = require('node-fetch');
 
@@ -41,7 +68,7 @@ export async function createBid(Tokenid, UserName, Bidprice) {
             'Content-Type': 'application/json',
             Accept: 'application/json, text/plain, */*'
         },
-        body: `{"Tokenid":${Tokenid},"Date":"${currentDate}","UserName":"${UserName._address}","Bidprice": ${Bidprice}}`
+        body: `{"Tokenid":${Tokenid},"Date":"${currentDate}","UserName":"${UserName}","Bidprice": ${Bidprice}}`
     };
     var booltrue = true;
 

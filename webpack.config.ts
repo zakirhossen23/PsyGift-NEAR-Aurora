@@ -10,7 +10,7 @@ type WebpackConfig = webpack.Configuration & { devServer?: DevServerConfiguratio
 export default (_: any, options: any): WebpackConfig => {
     const HOST = process.env.HOST ?? 'localhost'
     const PORT = parseInt(process.env.PORT ?? '3000', 10)
-    const hmrDisabled = process.env.NO_HMR
+    const hmrDisabled = false;
 
     const isProduction = options.mode === 'production'
     const isDevelopment = options.mode === 'development'
@@ -24,11 +24,11 @@ export default (_: any, options: any): WebpackConfig => {
      */
 
     config.entry = {
-        '/index': path.resolve(__dirname, 'src/index'),
-        "/donation": path.resolve(__dirname, 'src/pages/donation/index'),
-        "/EVERswap":  path.resolve(__dirname, 'src/modules/EVERswap/index'),
-        "/swap": path.resolve(__dirname, 'src/pages/SwapPage/index'),
-        "/donation/auction": path.resolve(__dirname, 'src/pages/donation/auction/index'),
+         '/index': path.resolve(__dirname, 'src/index'),
+        // "/donation": path.resolve(__dirname, 'src/index'),
+        // "/EVERswap":  path.resolve(__dirname, 'src/index'),
+        // "/swap": "path.resolve(__dirname, 'src/index')",
+        // "/donation/auction": path.resolve(__dirname, 'src/index'),
     }
 
     /*
@@ -71,7 +71,6 @@ export default (_: any, options: any): WebpackConfig => {
      */
 
     config.plugins = []
-
     if (isDevelopment && !hmrDisabled) {
         config.plugins.push(new webpack.HotModuleReplacementPlugin())
     }
