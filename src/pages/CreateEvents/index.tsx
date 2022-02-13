@@ -181,7 +181,7 @@ export default function CreateEvents() {
             <Row>
 
                 <Col >
-                    <div style={{ width: "600px", background: "transparent", padding: "19px", borderRadius: "4px", height: "100%", border: "white solid" }}>
+                    <div style={{ width: "45vw", background: "transparent", padding: "19px", borderRadius: "4px", height: "100%", border: "white solid" }}>
                         <div style={{ margin: "0px 0px 30px 0px" }}>
                             <h1 style={{ marginBottom: "10px" }}>Create Event</h1>
                         </div>
