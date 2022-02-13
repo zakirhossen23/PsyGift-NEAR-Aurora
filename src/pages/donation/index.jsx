@@ -56,7 +56,7 @@ export default function Donation() {
             await fetch(url, options).then(res => res.json())
                 .then(json => allEvents = json)
                 .catch(err => console.error('error:' + err));
-
+            
             console.log(allEvents);
             const totalEvent = allEvents.length;
             const arr = [];

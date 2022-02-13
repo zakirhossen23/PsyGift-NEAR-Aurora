@@ -36,7 +36,7 @@ import Psyoption from '@/psyoption/pages/initialize-market/init'
 import PsyoptionMint from '@/psyoption/pages/mint/mint'
 import './App.scss'
 import * as serviceWorker from "./serviceWorker";
-import '@/contracts/contract';
+import '@/near-contracts/contract';
 
 export function App(): JSX.Element {
     return (

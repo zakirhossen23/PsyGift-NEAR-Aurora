@@ -23,20 +23,14 @@ import "regenerator-runtime/runtime";
 import * as nearAPI from "near-api-js"
 import getConfig from "@/config"
 
+
+import useContract from '../../../services/useContract';
+
 window.nearConfig = getConfig("development");
 export default function CreateEvents() {
-    // Function that initializes the signIn button using WalletAccount
-    function signedOutFlow() {
-        window.walletAccount.requestSignIn(
-            // The contract name that would be authorized to be called by the user's account.
-            window.nearConfig.contractName,
-            // This is the app name. It can be anything.
-            'Who was the last person to say "Hi!"?',
-            // We can also provide URLs to redirect on success and failure.
-            // The current URL is used by default.
-        );
+    const { contract } = useContract('ERC721');
 
-    }
+
     const CreateEvent = async () => {
         // while(true){
         //     try {
@@ -64,11 +58,24 @@ export default function CreateEvents() {
         //     }
         // }
         // Based on whether you've authorized, checking which flow we should go.
-        if (!window.walletAccount.isSignedIn()) {
-            signedOutFlow();
-        } else {
+        console.log(contract);
+        const createdObject = {
+            Title: EventTitle,        
+            Date:  EventDate,
+            Type: EventWalletType,
+            Address:EventWalletAddress,
+            Goal: EventGoal,
+            logo:  EventLogo,
+            categories: eventCategories
+        };
 
-        }
+        const result = await contract.createEvent(
+            JSON.stringify(createdObject)
+        );
+
+        console.log(result);
+
+
     };
 
     // Application initialization
@@ -79,12 +86,7 @@ export default function CreateEvents() {
         placeholder: 'Event Title',
         id: ''
     });
-    const [EventDescription, EventDescriptionInput] = UseFormInput({
-        defaultValue: "",
-        type: 'text',
-        placeholder: 'Event Description',
-        id: ''
-    });
+    
     const [EventDate, EventDateInput] = UseFormInput({
         defaultValue: "",
         type: 'datetime-local',
@@ -95,9 +97,9 @@ export default function CreateEvents() {
         defaultValue: "NEAR",
         type: 'select',
         id: 'walletType',
-        select_options: [{ value: "NEAR", text: "NEAR" },{ value: "UST", text: "UST" },{ value: "EVER", text: "EVER" } ]
+        select_options: [{ value: "NEAR", text: "NEAR" }, { value: "UST", text: "UST" }, { value: "EVER", text: "EVER" }]
     });
-    const [EventWalletAddressGoal, EventWalletAddressInput] = UseFormInput({
+    const [EventWalletAddress, EventWalletAddressInput] = UseFormInput({
         defaultValue: "",
         type: 'text',
         placeholder: 'Wallet Address',

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-import erc721 from '../contracts/deployments/metis/MetisERC721.json';
+import erc721 from '../contracts/deployments/testnet_aurora/AuroraERC721.json';
 
 export default function ERC721Singleton(signer) {
 	if (!ERC721Singleton._instance) {

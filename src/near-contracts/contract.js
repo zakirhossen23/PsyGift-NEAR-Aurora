@@ -17,16 +17,16 @@ async function initContract() {
   // Getting the Account ID. If unauthorized yet, it's just empty string.
   window.accountId = window.walletAccount.getAccountId();
 
-  // Initializing our contract APIs by contract name and configuration.
-  window.contract = await window.near.loadContract(nearConfig.contractName, {
-    // NOTE: This configuration only needed while NEAR is still in development
-    // View methods are read only. They don't modify the state, but usually return some value.
-    viewMethods: ['whoSaidHi'],
-    // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['sayHi'],
-    // Sender is the account ID to initialize transactions.
-    sender: window.accountId,
-  });
+  // // Initializing our contract APIs by contract name and configuration.
+  // window.contract = await window.near.loadContract(nearConfig.contractName, {
+  //   // NOTE: This configuration only needed while NEAR is still in development
+  //   // View methods are read only. They don't modify the state, but usually return some value.
+  //   viewMethods: ['whoSaidHi'],
+  //   // Change methods can modify the state. But you don't receive the returned value when called.
+  //   changeMethods: ['sayHi'],
+  //   // Sender is the account ID to initialize transactions.
+  //   sender: window.accountId,
+  // });
 }
 
 // // Using initialized contract
