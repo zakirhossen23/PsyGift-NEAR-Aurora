@@ -90,8 +90,6 @@ export default function CreateEvents() {
         );
 
         console.log(result);
-
-
     };
 
     // Application initialization
@@ -118,7 +116,7 @@ export default function CreateEvents() {
     const [EventWalletAddress, EventWalletAddressInput] = UseFormInput({
         defaultValue: "",
         type: 'text',
-        placeholder: 'Wallet Address',
+        placeholder: 'Wallet',
         id: 'wallet',
     });
     const [EventGoal, setEventGoal] = useState(0);
@@ -166,7 +164,6 @@ export default function CreateEvents() {
             }
         }
         setEventCategories(temp_arr);
-
     }
     const eventGoalChanged = (value) => {
         setEventGoal(value);
@@ -200,7 +197,10 @@ export default function CreateEvents() {
                             {EventWalletTypeInput}
                         </div>
                         <div style={{ margin: "18px 0" }}>
-                            <h4 style={{ marginBottom: "10px" }}>Wallet Address in {EventWalletType}</h4>
+                            {EventWalletType=="NEAR"?(<><h4 style={{ marginBottom: "10px" }}>Account ID of {EventWalletType} wallet</h4></>):(
+                            <> <h4 style={{ marginBottom: "10px" }}>Wallet Address in {EventWalletType}</h4></>
+                            )}
+                           
                             {EventWalletAddressInput}
                         </div>
                         <div style={{ margin: "18px 0" }}>

@@ -119,9 +119,9 @@ export default function BidNFTModal({
 	async function bidNFT() {
 		if (walletType == "EVER") {
 			await toast.promise(BidbyEver, {
-				pending: `${type} is creating...`,
+				pending: `Bidding...`,
 				error: "Please try again later",
-				success: `${type} has created!`
+				success: `Success!!!`
 			});
 		} else if (walletType == "UST") {
 			if (selectedTerra == "UST/LUNA") {
@@ -129,12 +129,19 @@ export default function BidNFTModal({
 			}
 			else {
 				await toast.promise(bidNFTByTerra, {
-					pending: `${type} is creating...`,
+					pending: `Bidding...`,
 					error: "Please try again later",
-					success: `${type} has created!`
+					success: `Success!!!`
 				});
 			}
+		} else if (walletType == "NEAR") {
+			await toast.promise(bidNFTbyNEAR, {
+				pending: `Bidding...`,
+				error: "Please try again later",
+				success: `Success!!!`
+			});
 		}
+
 	}
 
 	async function bidNFTByTerra() {
@@ -144,7 +151,7 @@ export default function BidNFTModal({
 		}
 		var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
 		if (!connectedWallet) {
-			buttonProps.innerText = "Connect to wallet"
+			buttonProps.innerText = "Connect to Terra wallet"
 			await connect("EXTENSION");
 			return;
 		}
@@ -262,6 +269,44 @@ export default function BidNFTModal({
 		}
 
 	}
+
+
+	async function bidNFTbyNEAR() {
+		if (Number(Amount) < Number(Highestbid)) {
+			activateWarningModal();
+			return;
+		}
+		var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
+		if (window.walletAccount.isSignedIn() == false) {
+			buttonProps.innerText = "Connect to NEAR wallet"
+			await toast.warn("Not connected with NEAR wallet! Connecting...");
+			await window.walletAccount.requestSignIn(
+				window.nearConfig.contractName,
+				'PsyGift');
+			return ;
+		}
+		// We call say Hi and then update who said Hi last.
+		// window.contract.sayHi().then(updateWhoSaidHi);
+		const config = {
+			networkId: "testnet",
+			keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
+			nodeUrl: "https://rpc.testnet.near.org",
+			walletUrl: "https://wallet.testnet.near.org",
+			helperUrl: "https://helper.testnet.near.org",
+			explorerUrl: "https://explorer.testnet.near.org",
+		};
+		// sends NEAR tokens
+		const near = await nearAPI.connect(config);
+		const account = await near.account(walletAccount.getAccountId());
+		const amountInYocto = utils.format.parseNearAmount(Number(Amount));
+
+		const result = await account.sendMoney(
+			ToAddress, // receiver account
+			amountInYocto // amount in yoctoNEAR
+		);
+		console.log(result);
+	}
+
 	const [categories, setCategories] = useState([]);
 	const [selectCoinTypeModal, setSelectCoinTypeModal] = useState(false);
 	const [selectedTerra, setSelectedTerra] = useState("UST/LUNA");

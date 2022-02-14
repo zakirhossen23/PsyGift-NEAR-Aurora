@@ -86,7 +86,12 @@ export default function Donation() {
                 console.log(everPrice);
                 everPrice = everPrice.data.marketPairs[0].price;
 
-            
+                var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
+                
+                await fetch(nearCurrencyUrl, currency_options).then(res => res.json())
+                .then(json => nearPrice = json)
+                .catch(err => console.error('error:' + err));
+                nearPrice = nearPrice.data.marketPairs[0].price;
             } catch (ex) {
                 var terraPrice = 0;
                 var everPrice = 0;
@@ -99,8 +104,10 @@ export default function Donation() {
                     var goalPrice2usd = 0;
                     if(value.wallettype=="UST"){
                         goalPrice2usd = Number(value.Goal * terraPrice);
-                    }else{
+                    }else if (value.wallettype=="EVER"){
                         goalPrice2usd = Number(value.Goal * everPrice); 
+                    }else if(value.wallettype=="NEAR"){
+                        goalPrice2usd = Number(value.Goal * nearPrice); 
                     }
                     
 

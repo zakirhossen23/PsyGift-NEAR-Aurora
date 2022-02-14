@@ -11,7 +11,7 @@ import ViewBidNFTModal from '../../../components/components/modals/ViewBidNFTMod
 import DonateNFTModal from '../../../components/components/modals/DonateNFTModal';
 
 export default function Auction() {
-    const id = window.location.search.replace("?", "")
+    const id = window.location.search.match("[0-9]+")[0]
     console.log("id => ", id);
     const [CreatemodalShow, setDonateModalShow] = useState(false);
 
@@ -67,7 +67,8 @@ export default function Auction() {
             console.log("started chekcing");
             let terraPrice = 0;
             let everPrice = 0;
-            //Terra and Ever currency
+            let nearPrice = 0;
+            //Terra and Ever and NEAR currency
             try { 
                 
                 var terraCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=terrausd&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
@@ -91,9 +92,18 @@ export default function Auction() {
                 .catch(err => console.error('error:' + err));
                 console.log(everPrice);
                 everPrice = everPrice.data.marketPairs[0].price;
+
+                var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
+                
+                await fetch(nearCurrencyUrl, currency_options).then(res => res.json())
+                .then(json => nearPrice = json)
+                .catch(err => console.error('error:' + err));
+                nearPrice = nearPrice.data.marketPairs[0].price;
+
             } catch (ex) {
                 terraPrice = 0;
                 everPrice = 0;
+                nearPrice = 0;
              }
             while (boolTrue) {
                 try {
@@ -113,8 +123,10 @@ export default function Auction() {
                             try { 
                                 if(value.wallettype=="UST"){
                                     price2Usd = Number(object.price * terraPrice);
-                                }else{
+                                }else if (value.wallettype=="EVER"){
                                     price2Usd = Number(object.price * everPrice); 
+                                }else if(value.wallettype=="NEAR"){
+                                    price2Usd = Number(object.price * nearPrice); 
                                 }
                             } catch (ex) { }
 
@@ -142,8 +154,10 @@ export default function Auction() {
                     setWalletType(value.wallettype);
                     if(value.wallettype=="UST"){
                         setgoalusd(formatter.format(Number(value.Goal * terraPrice)));
-                    }else{
+                    }else if (value.wallettype=="EVER"){
                         setgoalusd(formatter.format(Number(value.Goal * everPrice)));
+                    }else if(value.wallettype=="NEAR"){
+                        setgoalusd(formatter.format(Number(value.Goal * nearPrice)));
                     }
                     
                     setgoal(Number(value.Goal));
