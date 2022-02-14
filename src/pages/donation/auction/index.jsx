@@ -372,6 +372,7 @@ export default function Auction() {
                     AuctionfetchContractData();
                 }}
                 id={selectid}
+                walletType={walletType}
                 title={selecttitle}
                 
             />

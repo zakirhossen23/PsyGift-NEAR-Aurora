@@ -10,6 +10,7 @@ export default function ViewmodalShow({
 	show,
 	onHide,
 	id,
+	walletType,
 	title
 }) {
 	const [list, setList] = useState([]);
@@ -114,7 +115,7 @@ export default function ViewmodalShow({
 										<h5 className="cell">{listItem.UserName}</h5>
 									</div>
 									<div className="tableRowCellBidContainer">
-										<h5 className="cell">${listItem.bidpriceusd} ({listItem.Bidprice} UST)</h5>
+										<h5 className="cell">${listItem.bidpriceusd} ({listItem.Bidprice} {walletType})</h5>
 									</div>
 								</div>
 							</div>

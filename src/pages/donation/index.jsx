@@ -80,12 +80,13 @@ export default function Donation() {
                 var everPrice = 0;
                 var everCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=Everscale&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
                 
+                
                 await fetch(everCurrencyUrl, currency_options).then(res => res.json())
                 .then(json => everPrice = json)
                 .catch(err => console.error('error:' + err));
                 console.log(everPrice);
                 everPrice = everPrice.data.marketPairs[0].price;
-
+                var nearPrice = 0;
                 var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
                 
                 await fetch(nearCurrencyUrl, currency_options).then(res => res.json())

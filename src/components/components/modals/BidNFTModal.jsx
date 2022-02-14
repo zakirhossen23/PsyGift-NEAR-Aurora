@@ -12,6 +12,7 @@ import { useWallet } from '@/stores/WalletService'
 import { createBid, ReduceCategory } from '@/pages/Events/token'
 import { Icon } from '@/components/common/Icon'
 import { getCategoriesbyeventid, eventgetbyid } from '../../../pages/Events/event'
+import * as nearAPI from "near-api-js"
 
 import {
 	CreateTxFailed,
@@ -298,13 +299,26 @@ export default function BidNFTModal({
 		// sends NEAR tokens
 		const near = await nearAPI.connect(config);
 		const account = await near.account(walletAccount.getAccountId());
-		const amountInYocto = utils.format.parseNearAmount(Number(Amount));
+		const amountInYocto =(Number(Amount) * 1000000000000000000000000).toLocaleString('fullwide', {useGrouping:false});
 
-		const result = await account.sendMoney(
+		 await account.sendMoney(
 			ToAddress, // receiver account
 			amountInYocto // amount in yoctoNEAR
-		);
-		console.log(result);
+		).then(async () => {
+			await createBid(tokenId, walletAccount.getAccountId().toString(), Amount);
+			for (var i = 0; i < selectedCategory.length; i++) {
+				await ReduceCategory(selectedCategory[i]);
+			}
+
+		}).then(() => {
+			window.location.reload();
+			window.document.getElementsByClassName("btn-close")[0].click();
+		})
+		.catch((error) => {
+			console.error("error:",error);
+			console.log(error);
+			return;
+		})
 	}
 
 	const [categories, setCategories] = useState([]);
