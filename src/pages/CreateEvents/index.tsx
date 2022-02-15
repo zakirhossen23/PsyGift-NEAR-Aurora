@@ -27,12 +27,12 @@ window.nearConfig = getConfig("development");
 export default function CreateEvents() {
     const { contract } = useContract('ERC721');
 
-    async function CreateEvent(){
-       await toast.promise(CreatingEvent, {
+    async function CreateEvent() {
+        await toast.promise(CreatingEvent, {
             pending: "Event is creating...",
             error: "Please try again later",
             success: "Event has created!"
-        },{
+        }, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -41,47 +41,21 @@ export default function CreateEvents() {
             draggable: true,
             progress: undefined,
             className: "Toastify__toast-theme--dark"
-            })
+        })
 
-            document.querySelectorAll('[href="/donation"]')[0].click()    
+        document.querySelectorAll('[href="/donation"]')[0].click()
     }
 
     const CreatingEvent = async () => {
-   
-        while(true){
-            try {
-                // const eventcategories = JSON.stringify(eventCategories);
-                // const eventcategories = JSON.stringify(eventCategories);
-                // console.log(eventcategories);
-                const id = await createEventAPI(EventTitle, "", EventDate, EventWalletAddress, EventGoal, EventLogo,EventWalletType);
-
-                for(var i=0; i<eventCategories.length;i++){
-                    await createEventCategoryAPI(id, eventCategories[i].title,eventCategories[i].amount,eventCategories[i].price,eventCategories[i].image);
-                }
-                // await createEventCategoryAPI(id, eventCategories[0].title,eventCategories[0].amount,eventCategories[0].price,eventCategories[0].image);
-                console.log("here1");
-                console.log(eventCategories);
-                if (document.getElementById("plugin").checked) {
-                    await CreatePlugin(`https://${window.location.hostname}/donation/auction?${id}`);
-                }
-
-               
-                break;
-            } catch (error) {
-                console.error(error);
-                setTimeout(function() {}, 2000);
-                continue;
-            }
-        }
- //       Based on whether you've authorized, checking which flow we should go.
+        //  Contract
         console.log(contract);
         const createdObject = {
-            Title: EventTitle,        
-            Date:  EventDate,
+            Title: EventTitle,
+            Date: EventDate,
             Type: EventWalletType,
-            Address:EventWalletAddress,
+            Address: EventWalletAddress,
             Goal: EventGoal,
-            logo:  EventLogo,
+            logo: EventLogo,
             categories: eventCategories
         };
 
@@ -90,6 +64,32 @@ export default function CreateEvents() {
         );
 
         console.log(result);
+        while (true) {
+            try {
+                // const eventcategories = JSON.stringify(eventCategories);
+                // const eventcategories = JSON.stringify(eventCategories);
+                // console.log(eventcategories);
+                const id = await createEventAPI(EventTitle, "", EventDate, EventWalletAddress, EventGoal, EventLogo, EventWalletType);
+
+                for (var i = 0; i < eventCategories.length; i++) {
+                    await createEventCategoryAPI(id, eventCategories[i].title, eventCategories[i].amount, eventCategories[i].price, eventCategories[i].image);
+                }
+                // await createEventCategoryAPI(id, eventCategories[0].title,eventCategories[0].amount,eventCategories[0].price,eventCategories[0].image);
+                console.log("here1");
+                console.log(eventCategories);
+                if (document.getElementById("plugin").checked) {
+                    await CreatePlugin(`https://${window.location.hostname}/donation/auction?${id}`);
+                }
+
+
+                break;
+            } catch (error) {
+                console.error(error);
+
+                continue;
+            }
+        }
+
     };
 
     // Application initialization
@@ -100,7 +100,7 @@ export default function CreateEvents() {
         placeholder: 'Event Title',
         id: ''
     });
-    
+
     const [EventDate, EventDateInput] = UseFormInput({
         defaultValue: "",
         type: 'datetime-local',
@@ -197,10 +197,10 @@ export default function CreateEvents() {
                             {EventWalletTypeInput}
                         </div>
                         <div style={{ margin: "18px 0" }}>
-                            {EventWalletType=="NEAR"?(<><h4 style={{ marginBottom: "10px" }}>Account ID of {EventWalletType} wallet</h4></>):(
-                            <> <h4 style={{ marginBottom: "10px" }}>Wallet Address in {EventWalletType}</h4></>
+                            {EventWalletType == "NEAR" ? (<><h4 style={{ marginBottom: "10px" }}>Account ID of {EventWalletType} wallet</h4></>) : (
+                                <> <h4 style={{ marginBottom: "10px" }}>Wallet Address in {EventWalletType}</h4></>
                             )}
-                           
+
                             {EventWalletAddressInput}
                         </div>
                         <div style={{ margin: "18px 0" }}>
