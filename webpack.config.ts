@@ -77,38 +77,28 @@ export default (_: any, options: any): WebpackConfig => {
 
     config.plugins.push(
         new HtmlWebpackPlugin({
-            title: 'PsyGift',
+            title: 'DemeterGift',
             favicon: 'public/favicon.svg',
-            filename: path.resolve(__dirname, 'dist/index.html'),
-            template: 'public/index.html',
-            inject: false,
-        }), new HtmlWebpackPlugin({
-            title: 'PsyGift',
-            favicon: 'public/favicon.ico',
             filename: path.resolve(__dirname, 'dist/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'PsyGift - Donation',
+            title: 'DemeterGift - Donation',
+            favicon: 'public/favicon.svg',
             filename: path.resolve(__dirname, 'dist/donation/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'PsyGift - Swap',
-            filename: path.resolve(__dirname, 'dist/swap/index.html'),
+            title: 'DemeterGift - Create Events',
+            favicon: 'public/favicon.svg',
+            filename: path.resolve(__dirname, 'dist/CreateEvents/index.html'),
             template: 'public/index.html',
             inject: false,
         })
         , new HtmlWebpackPlugin({
-            title: 'PsyGift - Swap',
-            filename: path.resolve(__dirname, 'dist/EVERswap/index.html'),
-            template: 'public/index.html',
-            inject: false,
-        })
-        , new HtmlWebpackPlugin({
-            title: 'PsyGift - Auction',
+            title: 'DemeterGift - Auction',
             filename: path.resolve(__dirname, 'dist/donation/auction/index.html'),
             template: 'public/index.html',
             inject: false,

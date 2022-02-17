@@ -13,38 +13,7 @@ export function Nav(): JSX.Element {
     return (
         <nav className="main-nav">
             <ul>
-                <li>
-                    <NavLink to="/swap">
-                        {intl.formatMessage({
-                            id: 'NAV_LINK_TEXT_SWAP',
-                        })}
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/psyoption">
-                        PsyOptions
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/psyoption-mint">
-                        PsyOptions Mint
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/tokens">
-                        {intl.formatMessage({
-                            id: 'NAV_LINK_TEXT_TOKENS',
-                        })}
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/pairs">
-                        {intl.formatMessage({
-                            id: 'NAV_LINK_TEXT_PAIRS',
-                        })}
-                    </NavLink>
-                </li>
-
+   
                 <li>
                     <NavLink to="/donation" id="donationbtnNav">
                         Donation

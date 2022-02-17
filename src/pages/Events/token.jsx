@@ -3,7 +3,7 @@
 export async function tokengetbyeventid(eventid) {
     const fetch = require('node-fetch');
 
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/tokensbyevent';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/tokensbyevent';
 
     let options = {
         method: 'POST',
@@ -32,7 +32,7 @@ export async function tokengetbyeventid(eventid) {
 
 export async function createTokenAPI(EventID, name, description, price, type, Logourl) {
     const fetch = require('node-fetch');
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/createtoken';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/createtoken';
     let options = {
         method: 'POST',
         headers: {
@@ -60,7 +60,7 @@ export async function createTokenAPI(EventID, name, description, price, type, Lo
 export async function createBid(Tokenid, UserName, Bidprice) {
     const fetch = require('node-fetch');
 
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/createbid';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/createbid';
     let currentDate = new Date();
     let options = {
         method: 'POST',
@@ -84,7 +84,7 @@ export async function createBid(Tokenid, UserName, Bidprice) {
 export async function ReduceCategory(categoryId) {
     const fetch = require('node-fetch');
 
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/updatecategory';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/updatecategory';
     
     let options = {
         method: 'POST',
@@ -109,7 +109,7 @@ export async function ReduceCategory(categoryId) {
 export async function bidsgetbytokenid(Tokenid) {
     const fetch = require('node-fetch');
 
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/bidbytoken';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/bidbytoken';
 
     let options = {
         method: 'POST',

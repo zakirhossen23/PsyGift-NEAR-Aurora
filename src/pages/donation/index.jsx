@@ -43,7 +43,7 @@ export default function Donation() {
 
             const fetch = require('node-fetch');
 
-            let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/events';
+            let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/events';
 
             let options = {
                 method: 'GET',
@@ -63,29 +63,7 @@ export default function Donation() {
 
             //Terra and Ever currency
             try { 
-                var terraPrice = 0;
-                var terraCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=terrausd&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
-                const currency_options = {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json, text/plain, */*'
-                    },
-                };
-                await fetch(terraCurrencyUrl, currency_options).then(res => res.json())
-                .then(json => terraPrice = json)
-                .catch(err => console.error('error:' + err));
-                terraPrice = terraPrice.data.marketPairs[0].price;
-
-                var everPrice = 0;
-                var everCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=Everscale&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
-                
-                
-                await fetch(everCurrencyUrl, currency_options).then(res => res.json())
-                .then(json => everPrice = json)
-                .catch(err => console.error('error:' + err));
-                console.log(everPrice);
-                everPrice = everPrice.data.marketPairs[0].price;
+               
                 var nearPrice = 0;
                 var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
                 
@@ -103,14 +81,8 @@ export default function Donation() {
                 console.log(value);
                 if (value) {
                     var goalPrice2usd = 0;
-                    if(value.wallettype=="UST"){
-                        goalPrice2usd = Number(value.Goal * terraPrice);
-                    }else if (value.wallettype=="EVER"){
-                        goalPrice2usd = Number(value.Goal * everPrice); 
-                    }else if(value.wallettype=="NEAR"){
-                        goalPrice2usd = Number(value.Goal * nearPrice); 
-                    }
-                    
+                   
+                      goalPrice2usd = Number(value.Goal * nearPrice); 
 
                     arr.push({
                         eventId: value.id,
@@ -237,7 +209,7 @@ export default function Donation() {
                             <h4 style={{ fontSize: '1.7vw' }}>{listItem.Title}</h4>
                             <div style={{ display: "flex", "whiteSpace": "pre-wrap" }}>
                                 <h4 style={{ fontSize: '1.7vw' }}>Goal:  </h4>
-                                <h4 style={{ fontSize: '1.7vw' }}>${listItem.Goalusd} ({listItem.Goal} {listItem.wallettype})</h4>
+                                <h4 style={{ fontSize: '1.7vw' }}>${listItem.Goalusd} ({listItem.Goal} NEAR)</h4>
                             </div>
 
                             <div style={{

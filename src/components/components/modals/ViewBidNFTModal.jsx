@@ -39,12 +39,18 @@ export default function ViewmodalShow({
 					const Datetime = new Date(object.Date);
 
 					let currentdate = `${addZero(Datetime.getDate())}/${addZero(Datetime.getMonth() + 1)}/${addZero(Datetime.getFullYear())} ${addZero(Datetime.getHours())}:${addZero(Datetime.getMinutes())}:${addZero(Datetime.getSeconds())} ${AmPM(Datetime.getHours())}`
-
+					var nearPrice = 0;
+					var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
+					
+					await fetch(nearCurrencyUrl, currency_options).then(res => res.json())
+					.then(json => nearPrice = json)
+					.catch(err => console.error('error:' + err));
+					nearPrice = nearPrice.data.marketPairs[0].price;
 					if (object.UserName) {
 						arr.push({
 							Date: currentdate,
 							UserName: object.UserName,
-							bidpriceusd: formatter.format(object.Bidprice * 0.371936),
+							bidpriceusd: formatter.format(object.Bidprice * Number(nearPrice)),
 							Bidprice: object.Bidprice
 						});
 
@@ -115,7 +121,7 @@ export default function ViewmodalShow({
 										<h5 className="cell">{listItem.UserName}</h5>
 									</div>
 									<div className="tableRowCellBidContainer">
-										<h5 className="cell">${listItem.bidpriceusd} ({listItem.Bidprice} {walletType})</h5>
+										<h5 className="cell">${listItem.bidpriceusd} ({listItem.Bidprice} NEAR)</h5>
 									</div>
 								</div>
 							</div>

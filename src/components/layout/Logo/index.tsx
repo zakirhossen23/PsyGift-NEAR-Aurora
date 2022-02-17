@@ -11,7 +11,7 @@ export function Logo(): JSX.Element {
             <NavLink to="/">
                 <div style={{ "display": "flex" }}>
                     <img className="NavImg" src="/favicon.svg" />
-                    <div className="navbar-brand">PsyGift</div>
+                    <div className="navbar-brand">DemeterGift</div>
                 </div>
             </NavLink>
         </div>

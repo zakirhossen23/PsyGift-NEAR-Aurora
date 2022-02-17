@@ -3,11 +3,12 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import UseFormInput from '../UseFormInput';
-import { createTokenAPI} from '@/pages/Events/token';
+import { createTokenAPI } from '@/pages/Events/token';
 
 import { toast } from 'react-toastify';
 
 import useContract from '../../../../services/useContract';
+import { WalletAccount } from 'near-api-js';
 
 export default function DonateNFTModal({
 	show,
@@ -21,7 +22,11 @@ export default function DonateNFTModal({
 }) {
 
 	const { contract, signerAddress } = useContract('ERC721');
+	const [selectedMarket, setSelectedMarket] = useState("Aurora/Paras");
 
+	const [PendingText, setPendingText] = useState(" is creating...");
+	const [ErrorText, setErrorText] = useState("Please try again later");
+	const [SuccessText, setSuccessText] = useState(" has created on Aurora!");
 
 	const [name, nameInput] = UseFormInput({
 		type: 'text',
@@ -49,26 +54,18 @@ export default function DonateNFTModal({
 		placeholder: 'Enter Cryptopunk address',
 	});
 
-async function createNFT() {
-  	await toast.promise(creatingNFT, {
-            pending: `${type} is creating...`,
-            error: "Please try again later",
-            success: `${type} has created!`
-        },{
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            className: "Toastify__toast-theme--dark"
-            })
-	window.location.href = `/donation/auction?${EventID}`;
-	window.document.getElementsByClassName("btn-close")[0].click();
-}
+	async function createNFT() {
+		await setPendingText(`Creating ${type} on Aurora...`);
+		await setErrorText(`Please try again`);
+		await setSuccessText(`Created ${type} on Aurora!`);
+		await toast.promise(creatingNFTonAurora, {
+			pending: PendingText,
+			error: ErrorText,
+			success: SuccessText
+		});
+	}
 
-	async function creatingNFT() {
+	async function creatingNFTonAurora() {
 		let Logourl = url;
 		var tokenAddress = NFTaddress;
 		if ("Cryptopunk" == type) {
@@ -77,33 +74,35 @@ async function createNFT() {
 
 		try {
 
-			const tokenID = await createTokenAPI(EventID,name, description, price, type, Logourl);
+			const tokenID = await createTokenAPI(EventID, name, description, price, type, Logourl);
 			const createdObject = {
-				eventid: EventID,        
-				name:  name,
+				eventid: EventID,
+				name: name,
 				description: description,
-				Bidprice:price,
+				Bidprice: price,
 				price: price,
-				type:  type,
+				type: type,
 				image: Logourl
 			};
 			const result = await contract.claimToken(
-                signerAddress,
-                EventID,
+				signerAddress,
+				EventID,
 				tokenID,
 				createdObject
-            );
+			);
 
-            console.log(result);
-
+			console.log(result);
+			window.location.href = `/donation/auction?${EventID}`;
+			window.document.getElementsByClassName("btn-close")[0].click();
 		} catch (error) {
-			return(error);
+			return (error);
 		}
-		
+
 
 	}
 
-	return (
+
+	return (<>
 		<Modal
 			show={show}
 			onHide={onHide}
@@ -128,7 +127,7 @@ async function createNFT() {
 						{descriptionInput}
 					</Form.Group>
 					<Form.Group className="mb-3" controlId="formGroupName">
-						<Form.Label>Opening price in {selectedWallet}</Form.Label>
+						<Form.Label>Opening price in NEAR</Form.Label>
 						{priceInput}
 					</Form.Group>
 
@@ -150,7 +149,7 @@ async function createNFT() {
 
 					}
 
-					<div className="d-grid" style={{marginTop:"20px"}}>
+					<div className="d-grid" style={{ marginTop: "20px" }}>
 						<Button variant="primary" onClick={createNFT}>
 							Donate {type}
 						</Button>
@@ -159,5 +158,8 @@ async function createNFT() {
 			</Modal.Body>
 		</Modal>
 		
+	</>
+
+
 	);
 }

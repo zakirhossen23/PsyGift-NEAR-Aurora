@@ -6,28 +6,10 @@ import Button from 'react-bootstrap/Button';
 import { toast } from 'react-toastify';
 
 import UseFormInput from '../UseFormInput';
-import { useCreateTokenForm } from '@/modules/Builder/hooks/useCreateTokenForm'
-import { useCreateTokenStore } from '@/modules/Builder/stores/CreateTokenStore'
-import { useWallet } from '@/stores/WalletService'
 import { createBid, ReduceCategory } from '@/pages/Events/token'
 import { Icon } from '@/components/common/Icon'
 import { getCategoriesbyeventid, eventgetbyid } from '../../../pages/Events/event'
 import * as nearAPI from "near-api-js"
-
-import {
-	CreateTxFailed,
-	Timeout,
-	TxFailed,
-	TxResult,
-	TxUnspecifiedError,
-	useConnectedWallet,
-	UserDenied,
-	useWallet as useWalletTerra,
-	WalletStatus as TerraWalletStatus
-} from '@terra-money/wallet-provider';
-
-import { Fee, MsgSend } from '@terra-money/terra.js';
-
 export default function BidNFTModal({
 	show,
 	onHide,
@@ -43,21 +25,12 @@ export default function BidNFTModal({
 		type: 'text',
 		placeholder: 'Amount',
 	});
-	const wallet = useWallet()
-	console.log(ToAddress);
-	console.log(categories);
-	const creatingTokenForm = useCreateTokenForm()
-
-	//Terra Wallet
-	const { connect, status, availableConnections } = useWalletTerra()
-	const connectedWallet = useConnectedWallet();
-	const [txError, setTxError] = React.useState("");
 	const [otherCategory, setOtherCategory] = useState(-1);
 
 	function activateWarningModal() {
 		var alertELM = document.getElementById("alert");
 		alertELM.style = 'contents';
-		setAlert(`Amount cannot be under ${Highestbid} ${walletType}`)
+		setAlert(`Amount cannot be under ${Highestbid} NEAR`)
 	}
 
 	useEffect(async () => {
@@ -88,189 +61,15 @@ export default function BidNFTModal({
 
 	}, [categories]);
 
-	async function BidbyEver() {
-		if (Number(Amount) < Number(Highestbid)) {
-			activateWarningModal();
-			return;
-		}
-		const creatingToken = useCreateTokenStore()
-		creatingToken.changeData('decimals', Number(Amount) * 1000000000);
-		creatingToken.changeData('ToAddress', ToAddress);
-		var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
-		console.log(creatingToken.decimals);
-		if (!wallet.account) {
-			buttonProps.innerText = "Connect to wallet"
-			await wallet.connect();
-		}
-		if (creatingToken.decimals != null) {
-
-			await creatingToken.createToken();
-		}
-
-		await createBid(tokenId, wallet.account.address._address, Amount);
-		for (var i = 0; i < selectedCategory.length; i++) {
-			await ReduceCategory(selectedCategory[i]);
-		}
-		console.log(`given ${Amount} highest => ${Highestbid}`)
-
-		window.location.reload();
-		window.document.getElementsByClassName("btn-close")[0].click();
-	}
-
 	async function bidNFT() {
-		if (walletType == "EVER") {
-			await toast.promise(BidbyEver, {
-				pending: `Bidding...`,
-				error: "Please try again later",
-				success: `Success!!!`
-			});
-		} else if (walletType == "UST") {
-			if (selectedTerra == "UST/LUNA") {
-				setSelectCoinTypeModal(true);
-			}
-			else {
-				await toast.promise(bidNFTByTerra, {
-					pending: `Bidding...`,
-					error: "Please try again later",
-					success: `Success!!!`
-				});
-			}
-		} else if (walletType == "NEAR") {
+		
 			await toast.promise(bidNFTbyNEAR, {
 				pending: `Bidding...`,
 				error: "Please try again later",
 				success: `Success!!!`
 			});
-		}
-
+		
 	}
-
-	async function bidNFTByTerra() {
-		if (Number(Amount) < Number(Highestbid)) {
-			activateWarningModal();
-			return;
-		}
-		var buttonProps = document.getElementsByClassName("btn btn-primary")[0];
-		if (!connectedWallet) {
-			buttonProps.innerText = "Connect to Terra wallet"
-			await connect("EXTENSION");
-			return;
-		}
-		if (selectedTerra == "ust") {
-			await connectedWallet
-				.post({
-					fee: new Fee(1000000, '200000uusd'),
-					msgs: [
-						new MsgSend(connectedWallet.walletAddress, ToAddress, {
-							uusd: 1000000 * Amount,
-						}),
-					],
-				})
-				.then(() => {
-					console.log("test1");
-					console.log(`given ${Amount} highest => ${Highestbid}`)
-				}).then(async () => {
-					await createBid(tokenId, connectedWallet.walletAddress.toString(), Amount);
-					for (var i = 0; i < selectedCategory.length; i++) {
-						await ReduceCategory(selectedCategory[i]);
-					}
-				}).then(() => {
-					window.location.reload();
-					window.document.getElementsByClassName("btn-close")[0].click();
-				})
-				.catch((error) => {
-					console.log("error:");
-					console.log(error);
-					if (error instanceof UserDenied) {
-						setTxError('User Denied');
-					} else if (error instanceof CreateTxFailed) {
-						setTxError('Create Tx Failed: ' + error.message);
-					} else if (error instanceof TxFailed) {
-						setTxError('Tx Failed: ' + error.message);
-					} else if (error instanceof Timeout) {
-						setTxError('Timeout');
-					} else if (error instanceof TxUnspecifiedError) {
-						setTxError('Unspecified Error: ' + error.message);
-					} else {
-						setTxError(
-							'Unknown Error: ' +
-							(error instanceof Error ? error.message : String(error)),
-						);
-					}
-				});
-		} else if (selectedTerra == "luna") {
-			//Terra and Ever currency
-			try {
-				var luna_currency = 0;
-				var lunaCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=terra-luna&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
-				const currency_options = {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						Accept: 'application/json, text/plain, */*'
-					},
-				};
-				await fetch(lunaCurrencyUrl, currency_options).then(res => res.json())
-					.then(json => luna_currency = json)
-					.catch(err => console.error('error:' + err));
-				luna_currency = luna_currency.data.marketPairs[0].price;
-			} catch (ex) {
-				var luna_currency = 0;
-				var everPrice = 0;
-			}
-			const lunaprice = (Amount / luna_currency).toFixed(6);
-			console.log("lunaprice");
-			console.log(lunaprice);
-			await connectedWallet
-				.post({
-					fee: new Fee(1000000, '200000uusd'),
-					msgs: [
-						new MsgSend(connectedWallet.walletAddress, ToAddress, {
-							uluna: 1000000 * lunaprice,
-						}),
-					],
-				})
-				.then(() => {
-					console.log("test1");
-
-
-					console.log(`given ${Amount} highest => ${Highestbid}`)
-
-
-				}).then(async () => {
-					await createBid(tokenId, connectedWallet.walletAddress.toString(), Amount);
-					for (var i = 0; i < selectedCategory.length; i++) {
-						await ReduceCategory(selectedCategory[i]);
-					}
-
-				}).then(() => {
-					window.location.reload();
-					window.document.getElementsByClassName("btn-close")[0].click();
-				})
-				.catch((error) => {
-					console.log("error:");
-					console.log(error);
-					if (error instanceof UserDenied) {
-						setTxError('User Denied');
-					} else if (error instanceof CreateTxFailed) {
-						setTxError('Create Tx Failed: ' + error.message);
-					} else if (error instanceof TxFailed) {
-						setTxError('Tx Failed: ' + error.message);
-					} else if (error instanceof Timeout) {
-						setTxError('Timeout');
-					} else if (error instanceof TxUnspecifiedError) {
-						setTxError('Unspecified Error: ' + error.message);
-					} else {
-						setTxError(
-							'Unknown Error: ' +
-							(error instanceof Error ? error.message : String(error)),
-						);
-					}
-				});
-		}
-
-	}
-
 
 	async function bidNFTbyNEAR() {
 		if (Number(Amount) < Number(Highestbid)) {
@@ -283,7 +82,7 @@ export default function BidNFTModal({
 			await toast.warn("Not connected with NEAR wallet! Connecting...");
 			await window.walletAccount.requestSignIn(
 				window.nearConfig.contractName,
-				'PsyGift');
+				'DemeterGift');
 			return ;
 		}
 		// We call say Hi and then update who said Hi last.
@@ -322,14 +121,7 @@ export default function BidNFTModal({
 	}
 
 	const [categories, setCategories] = useState([]);
-	const [selectCoinTypeModal, setSelectCoinTypeModal] = useState(false);
-	const [selectedTerra, setSelectedTerra] = useState("UST/LUNA");
 
-
-	const confirmBidNFTByTerra = () => {
-		setSelectCoinTypeModal(false);
-
-	}
 
 	const [allSelected, setAllSelected] = useState(false);
 	const [otherSelected, setOtherSelected] = useState(false);
@@ -396,7 +188,7 @@ export default function BidNFTModal({
 		<>
 			<Modal
 				show={show}
-				onHide={() => { setSelectedTerra("UST/LUNA"); onHide(); }}
+				onHide={onHide}
 				aria-labelledby="contained-modal-title-vcenter"
 				centered
 			>
@@ -416,7 +208,7 @@ export default function BidNFTModal({
 							{Alert}
 						</div>
 						<Form.Group className="mb-3" controlId="formGroupName">
-							<Form.Label>Bid Amount in {(walletType == "UST") ? ((selectedTerra == "UST/LUNA") ? "UST/LUNA" : (selectedTerra == "ust") ? "UST" : "LUNA") : walletType}</Form.Label>
+							<Form.Label>Bid Amount in NEAR</Form.Label>
 							{AmountInput}
 						</Form.Group>
 						<div className='selectCategoryAll'>
@@ -575,23 +367,7 @@ export default function BidNFTModal({
 				</Modal.Body>
 
 			</Modal>
-			<Modal show={selectCoinTypeModal}
-				onHide={() => setSelectCoinTypeModal(false)}
-				size='md'
-				centered style={{ padding: "20px" }}>
-				<Modal.Header closeButton>
-					Select coin you want to bid with.
-				</Modal.Header>
-				<div style={{ margin: "20px", display: "flex", justifyContent: "space-around" }}>
-					<div onClick={() => { setSelectedTerra("ust"); confirmBidNFTByTerra(); }}>
-						<img src='https://s2.coinmarketcap.com/static/img/coins/200x200/7129.png' style={{ width: "150px", height: "150px" }} />
-					</div>
-					<div onClick={() => { setSelectedTerra("luna"); confirmBidNFTByTerra(); }}>
-
-						<img src='https://assets.coingecko.com/coins/images/8284/large/luna1557227471663.png?1567147072' style={{ width: "150px", height: "150px" }} />
-					</div>
-				</div>
-			</Modal>
+			
 		</>
 	);
 }

@@ -5,15 +5,12 @@ import { Link, NavLink } from 'react-router-dom'
 
 import { Icon } from '@/components/common/Icon'
 import { Logo } from '@/components/layout/Logo'
-import { useWallet } from '@/stores/WalletService'
 
 import './index.scss'
 
 
 export function Footer(): JSX.Element {
     const intl = useIntl()
-    const wallet = useWallet()
-
     const toolbar = (<>
       </>
     )

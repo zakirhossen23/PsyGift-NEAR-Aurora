@@ -28,6 +28,11 @@ export default function CreateEvents() {
     const { contract } = useContract('ERC721');
 
     async function CreateEvent() {
+        if (window.walletAccount.isSignedIn() == false){
+            toast.warning("Please connect Near Account!");
+            return;
+        }
+
         await toast.promise(CreatingEvent, {
             pending: "Event is creating...",
             error: "Please try again later",
@@ -69,7 +74,9 @@ export default function CreateEvents() {
                 // const eventcategories = JSON.stringify(eventCategories);
                 // const eventcategories = JSON.stringify(eventCategories);
                 // console.log(eventcategories);
-                const id = await createEventAPI(EventTitle, "", EventDate, EventWalletAddress, EventGoal, EventLogo, EventWalletType);
+                const keypair =  new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+                
+                const id = await createEventAPI(EventTitle, "", EventDate, EventWalletAddress, EventGoal, EventLogo, EventWalletType,keypair);
 
                 for (var i = 0; i < eventCategories.length; i++) {
                     await createEventCategoryAPI(id, eventCategories[i].title, eventCategories[i].amount, eventCategories[i].price, eventCategories[i].image);
@@ -111,7 +118,7 @@ export default function CreateEvents() {
         defaultValue: "NEAR",
         type: 'select',
         id: 'walletType',
-        select_options: [{ value: "NEAR", text: "NEAR" }, { value: "UST", text: "UST" }, { value: "EVER", text: "EVER" }]
+        select_options: [{ value: "NEAR", text: "NEAR" }]
     });
     const [EventWalletAddress, EventWalletAddressInput] = UseFormInput({
         defaultValue: "",
@@ -232,19 +239,7 @@ export default function CreateEvents() {
                                                 <img src={eventCategory.image} style={{ width: "100%", borderRadius: "5px", height: "94px" }} />
                                                 <h5 style={{ color: "#151F28", textAlign: "center", marginTop: "10px", lineHeight: "14px" }}>{eventCategory.price * eventCategory.amount} USD</h5>
                                                 <h5 style={{ color: "#151F28", textAlign: "center", lineHeight: "14px" }}>({eventCategory.amount} pieces)</h5>
-                                                {/* <div style={{display:"flex", justifyContent:"flex-end"}}>
-                                                    <div style={{
-                                                        marginTop:"10px",
-                                                        display:"flex",
-                                                        width:"32px",
-                                                        height:"32px",
-                                                        justifyContent:"center",
-                                                        flexDirection:"column",
-                                                        alignItems:"center",
-                                                        borderRadius:"16px",
-                                                        background:"#EEF1F4"
-                                                    }}><Icon icon="heartSelected" /></div>
-                                                </div> */}
+                                              
                                             </div>
                                         </div>
                                     ))

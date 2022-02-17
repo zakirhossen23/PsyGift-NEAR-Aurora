@@ -65,13 +65,11 @@ export default function Auction() {
     async function AuctionfetchContractData() {
         if (id && window.location.pathname == "/donation/auction") {
             console.log("started chekcing");
-            let terraPrice = 0;
-            let everPrice = 0;
-            let nearPrice = 0;
-            //Terra and Ever and NEAR currency
-            try { 
-                
-                var terraCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=terrausd&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
+                let nearPrice = 0;
+            //NEAR currency
+            try {
+
+                var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
                 const currency_options = {
                     method: 'GET',
                     headers: {
@@ -79,39 +77,23 @@ export default function Auction() {
                         Accept: 'application/json, text/plain, */*'
                     },
                 };
-                await fetch(terraCurrencyUrl, currency_options).then(res => res.json())
-                .then(json => terraPrice = json)
-                .catch(err => console.error('error:' + err));
-                terraPrice = terraPrice.data.marketPairs[0].price;
-
-                
-                var everCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=Everscale&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
-                
-                await fetch(everCurrencyUrl, currency_options).then(res => res.json())
-                .then(json => everPrice = json)
-                .catch(err => console.error('error:' + err));
-                console.log(everPrice);
-                everPrice = everPrice.data.marketPairs[0].price;
-
-                var nearCurrencyUrl = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug=near-protocol&start=1&limit=1&category=spot&sort=cmc_rank_advanced";
-                
                 await fetch(nearCurrencyUrl, currency_options).then(res => res.json())
-                .then(json => nearPrice = json)
-                .catch(err => console.error('error:' + err));
+                    .then(json => nearPrice = json)
+                    .catch(err => console.error('error:' + err));
                 nearPrice = nearPrice.data.marketPairs[0].price;
 
             } catch (ex) {
-                terraPrice = 0;
-                everPrice = 0;
+                console.log(ex);
+
                 nearPrice = 0;
-             }
+            }
             while (boolTrue) {
                 try {
                     setEventId(id);
                     const value = await eventgetbyid(id);
                     const arr = [];
                     console.log(value);
-                   
+
                     const totalTokens = await tokengetbyeventid(id);
 
                     for (let i = 0; i < totalTokens.length; i++) {
@@ -120,14 +102,10 @@ export default function Auction() {
                         if (object.name) {
                             var pricedes1 = 0;
                             let price2Usd = 0
-                            try { 
-                                if(value.wallettype=="UST"){
-                                    price2Usd = Number(object.price * terraPrice);
-                                }else if (value.wallettype=="EVER"){
-                                    price2Usd = Number(object.price * everPrice); 
-                                }else if(value.wallettype=="NEAR"){
-                                    price2Usd = Number(object.price * nearPrice); 
-                                }
+                            try {
+
+                                price2Usd = Number(object.price * nearPrice);
+
                             } catch (ex) { }
 
                             arr.push({
@@ -152,14 +130,8 @@ export default function Auction() {
                     console.log(value.wallet);
                     setTitle(value.title);
                     setWalletType(value.wallettype);
-                    if(value.wallettype=="UST"){
-                        setgoalusd(formatter.format(Number(value.Goal * terraPrice)));
-                    }else if (value.wallettype=="EVER"){
-                        setgoalusd(formatter.format(Number(value.Goal * everPrice)));
-                    }else if(value.wallettype=="NEAR"){
-                        setgoalusd(formatter.format(Number(value.Goal * nearPrice)));
-                    }
-                    
+
+                    setgoalusd(formatter.format(Number(value.Goal * nearPrice)));
                     setgoal(Number(value.Goal));
                     setdateleft(LeftDate(value.endDate));
                     setdate(value.endDate);
@@ -170,11 +142,7 @@ export default function Auction() {
                     continue;
                 }
             }
-
-
-
         }
-
     }
     useEffect(() => {
         AuctionfetchContractData();
@@ -198,13 +166,8 @@ export default function Auction() {
                 var date = (allDates[i]).getAttribute("date");
                 allDates[i].innerHTML = LeftDateBid(date);
             }
-        } catch (error) {
-
-        }
-
+        } catch (error) {}
     }
-
-
 
     function activateViewBidModal(e) {
         setselectid(e.target.getAttribute("tokenid"));
@@ -229,7 +192,6 @@ export default function Auction() {
         setModalShow(true);
     }
 
-
     function activateCreateNFTModal(e) {
         setselecttype("NFT");
 
@@ -244,8 +206,7 @@ export default function Auction() {
 
     return (
         <>
-
-            <div className="row EventContainer" >
+ <div className="row EventContainer" >
                 <div style={{
                     display: 'flex',
                     width: '100%',
@@ -282,10 +243,7 @@ export default function Auction() {
                         <div className="card" onClick={activateCreateCryptopunkModal} style={{ color: 'white', overflow: 'hidden', background: '#0BD6BE', textAlign: 'center', cursor: 'pointer', float: 'right', width: '202px', height: '48px', padding: '0px' }}>
                             <div onClick={activateCreateCryptopunkModal} className="card-body" style={{ height: '100%', paddingTop: '21px', fontSize: '21px' }}>Donate Cryptopunk</div>
                         </div>
-
                     </div>
-
-
                 </div>
             </div>
             <div id='Loading' className="LoadingArea">
@@ -360,8 +318,8 @@ export default function Auction() {
                 ToAddress={selectwallet}
                 eventId={eventId}
                 Highestbid={selectbid}
-                walletType = {walletType}
-                goal = {goal}
+                walletType={walletType}
+                goal={goal}
             />
 
             <ViewBidNFTModal
@@ -374,7 +332,7 @@ export default function Auction() {
                 id={selectid}
                 walletType={walletType}
                 title={selecttitle}
-                
+
             />
             <DonateNFTModal
                 show={CreatemodalShow}
@@ -387,7 +345,7 @@ export default function Auction() {
                 SelectedTitle={title}
                 enddate={date}
             />
-            
+
 
         </>
     );

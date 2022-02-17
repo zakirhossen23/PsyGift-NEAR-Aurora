@@ -2,7 +2,7 @@
 export async function eventgetbyid(id) {
     const fetch = require('node-fetch');
 
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/events';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/events';
 
     let options = {
         method: 'GET',
@@ -38,16 +38,16 @@ export async function eventgetbyid(id) {
 
 }
 
-export async function createEventAPI(EventTitle, EventDescription, EventDate, EventWalletAddressGoal, EventGoal, EventLogo, wallettype) {
+export async function createEventAPI(EventTitle, EventDescription, EventDate, EventWalletAddressGoal, EventGoal, EventLogo, wallettype,walletkey) {
     const fetch = require('node-fetch');
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/create';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/create';
     let options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json, text/plain, */*'
         },
-        body: `{"title":"${EventTitle}","description":"${EventDescription}","endDate":"${EventDate}" ,"Goal":${EventGoal},"logolink":"${EventLogo}", "wallet":"${EventWalletAddressGoal}","wallettype":"${wallettype}"}`
+        body: `{"title":"${EventTitle}","description":"${EventDescription}","endDate":"${EventDate}" ,"Goal":${EventGoal},"logolink":"${EventLogo}", "wallet":"${EventWalletAddressGoal}","wallettype":"${wallettype}","walletkey":"${walletkey}"}`
     };
     console.log("options:");
     console.log(options);
@@ -68,7 +68,7 @@ export async function createEventAPI(EventTitle, EventDescription, EventDate, Ev
 
 export async function createEventCategoryAPI(eventId, catTitle, catAmount,catPrice,catImg) {
     const fetch = require('node-fetch');
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/createcategories';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/createcategories';
     let options = {
         method: 'POST',
         headers: {
@@ -97,7 +97,7 @@ export async function createEventCategoryAPI(eventId, catTitle, catAmount,catPri
 export async function getCategoriesbyeventid(eventid) {
     const fetch = require('node-fetch');
 
-    let url = 'https://cors-anyhere.herokuapp.com/https://demetergift-database.vercel.app/api/categoriesbyid';
+    let url = 'https://cors-anyhere.herokuapp.com/https://near-gift-database.vercel.app/api/categoriesbyid';
 
     let options = {
         method: 'POST',
